@@ -5,16 +5,16 @@ export const FeatureCards = () => {
     return (
         <div className="w-full paddings-x-lg">
             <div className="mx-auto grid-3-cols">
-                {abilities.map(({imgPath, title, desc}) => (
-                    <div key={title} className="card-border rounded-1xl p-8 flex flex-col gap-4 ">
-                        <div className="size-14 flex items-center justify-center rounded-full bg-zinc-900">
-                            <img src={imgPath} alt={title}/>
-
+                {
+                    abilities.map(({imgPath, title, desc}) => (
+                        <div key={title} className="card-border rounded-1xl p-8 flex flex-col gap-4 ">
+                            <div className="size-14 flex items-center justify-center rounded-full bg-zinc-900">
+                                <img src={imgPath} alt={title}/>
+                            </div>
+                            <h3 className="text-white text-21 font-semibold mt-2">{title}</h3>
+                            <p className="text-white-50 text-lg">{desc}</p>
                         </div>
-                        <h3 className="text-white text-21 font-semibold mt-2">{title}</h3>
-                        <p className="text-white-50 text-lg">{desc}</p>
-                    </div>
-                ))}
+                    ))}
             </div>
             FeatureCards
         </div>
