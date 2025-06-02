@@ -1,29 +1,46 @@
-import React, { useState } from 'react'
+import React, {useRef, useState} from 'react'
 import TitleHeader from "../components/TitleHeader.jsx";
 import ContactExperience from "../components/ContactExperience.jsx";
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
+    const formRef = useRef(null);
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         message: ''
     });
 
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
         setFormData(prevState => ({
             ...prevState,
             [name]: value
         }));
     };
-
-    const handleSubmit = (e) => {
+const abbas = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const handleSubmit = async (e) => {
         e.preventDefault();
         // Handle form submission logic here
-        console.log('Form submitted:', formData);
-        // Reset form after submission
-        setFormData({ name: '', email: '', message: '' });
-        alert('Thank you for your message! We will get back to you soon.');
+        setLoading(true)
+        try {
+            await emailjs.sendForm(
+
+                import.meta.env.VITE_APP_EMAILJS_SERVICE_ID,
+                import.meta.env.VITE_APP_EMAILJS_TEMPLATE_ID,
+                formRef.current,
+                import.meta.env.VITE_APP_EMAILJS_PUBLIC_KEY,
+            )
+            // Reset form after submission
+            setFormData({name: '', email: '', message: ''});
+            alert('Thank you for your message! We will get back to you soon.');
+        } catch (e) {
+                console.log('Emailjs ERROR:', e);
+        } finally {
+            setLoading(false)
+        }
     };
 
     return (
@@ -36,7 +53,7 @@ const Contact = () => {
                     {/* Left side - Contact Form */}
                     <div className="xl:col-span-5">
                         <div className="flex-center card-border rounded-xl p-10">
-                            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-7">
+                            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-7" ref={formRef}>
                                 <div>
                                     <label htmlFor="name">Name</label>
                                     <input
@@ -76,10 +93,10 @@ const Contact = () => {
                                     ></textarea>
                                 </div>
 
-                                <button type="submit">
+                                <button type="submit" disabled={loading} className="cta-wrapper">
                                     <div className="cta-button group">
                                         <div className="bg-circle"/>
-                                        <p className="text">Send Message</p>
+                                        <p className="text">{loading ? 'sending ... ' : 'Send Message'}</p>
                                         <div className="arrow-wrapper">
                                             <img src="/images/arrow-down.svg" alt="arrow"/>
                                         </div>
@@ -92,7 +109,7 @@ const Contact = () => {
                     {/* Right side - 3D Experience */}
                     <div className="xl:col-span-7 min-h-96">
                         <div className="w-full h-full bg-[#cd7c2e] hover:cursor-grab rounded-3xl overflow-hidden">
-                            <ContactExperience />
+                            <ContactExperience/>
                         </div>
                     </div>
                 </div>
